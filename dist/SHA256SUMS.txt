@@ -1,2 +1,2 @@
-e11be4cd7afbd3ac70928e5eb956fc3ab22cb1373f2a158bcfa3fded8300cc57  GraviStudio-v0.1.0-prebuilt.zip
-5638556fc22169843e7ff3acd643908da1ed44ded1bbf3d759a2ca47b835fb56  gravistudio-antigravity-plugin-v0.1.0.zip
+f16a305dd5143364402baa05474b581fd6a6372ef8dad04a56385ad7107e753b  GraviStudio-v0.1.0-prebuilt.zip
+ed875a84cbc93aeddcd621f4c76c0e1d5336c9ff86d3054fa5a0e9203eb29074  gravistudio-antigravity-plugin-v0.1.0.zip
