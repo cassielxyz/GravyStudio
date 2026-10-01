@@ -1,0 +1,8 @@
+{
+  "brag": {"label":"Brag","repo":"https://github.com/latent-spaces/brag.git","kind":"skill","description":"Product/app launch videos"},
+  "hyperframes": {"label":"HyperFrames","repo":"https://github.com/heygen-com/hyperframes.git","kind":"engine","description":"Programmatic motion graphics and video composition"},
+  "autoclip": {"label":"AutoClip","repo":"https://github.com/artbyjazi/autoclip.git","kind":"engine","description":"Long video to shorts"},
+  "supoclip": {"label":"SupoClip","repo":"https://github.com/FujiwaraChoki/supoclip.git","kind":"engine","description":"Self-hosted clipping workflow"},
+  "openmontage": {"label":"OpenMontage","repo":"https://github.com/n0-space/openmontage.git","kind":"engine","description":"Agentic long-form video production"},
+  "personalive": {"label":"PersonaLive","repo":"https://github.com/gskfilmmaker/personalive.git","kind":"experimental","description":"Portrait animation; local GPU requirements apply"}
+}
