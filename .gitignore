@@ -1,5 +1,8 @@
 node_modules/
-.DS_Store
+dist/
 .env
-.gravistudio/
+.env.*
+!.env.example
+.DS_Store
 *.log
+.gravistudio/

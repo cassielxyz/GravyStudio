@@ -1,0 +1,5 @@
+{
+  "$schema": "https://antigravity.google/schemas/v1/plugin.json",
+  "name": "gravistudio",
+  "description": "Free-first AI video studio router for product videos, motion graphics, shorts, long-form production, asset sourcing, checkpoints and QC."
+}

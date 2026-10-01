@@ -1,0 +1,15 @@
+<svg width="1500" height="390" viewBox="0 0 1500 390" fill="none" xmlns="http://www.w3.org/2000/svg">
+<defs><linearGradient id="g" x1="40" y1="0" x2="1450" y2="390"><stop stop-color="#7E5FFF"/><stop offset=".5" stop-color="#C348FF"/><stop offset=".76" stop-color="#0CBFFF"/><stop offset="1" stop-color="#36EFC0"/></linearGradient></defs>
+<rect width="1500" height="390" rx="28" fill="#0A0B10"/><rect x="1" y="1" width="1498" height="388" rx="27" stroke="#222633" stroke-width="2"/>
+<text x="66" y="74" fill="#F3F4F8" font-size="34" font-family="Inter,Segoe UI,Arial" font-weight="700">Production flow</text>
+<text x="66" y="108" fill="#777D8E" font-size="18" font-family="Inter,Segoe UI,Arial">Every job stays resumable and chooses the smallest capable engine.</text>
+<path d="M183 236H1322" stroke="url(#g)" stroke-width="5" stroke-linecap="round" opacity=".55"/>
+<g font-family="Inter,Segoe UI,Arial" text-anchor="middle">
+<g transform="translate(170 236)"><circle r="54" fill="#15131F" stroke="#7658FF" stroke-width="3"/><text y="5" fill="#FFFFFF" font-size="18" font-weight="700">Brief</text><text y="90" fill="#8C91A0" font-size="15">Prompt + inputs</text></g>
+<g transform="translate(410 236)"><circle r="54" fill="#16121D" stroke="#B74DFF" stroke-width="3"/><text y="5" fill="#FFFFFF" font-size="18" font-weight="700">Plan</text><text y="90" fill="#8C91A0" font-size="15">Storyboard</text></g>
+<g transform="translate(650 236)"><circle r="54" fill="#121821" stroke="#438BFF" stroke-width="3"/><text y="5" fill="#FFFFFF" font-size="18" font-weight="700">Assets</text><text y="90" fill="#8C91A0" font-size="15">Resolve + license</text></g>
+<g transform="translate(890 236)"><circle r="54" fill="#101A1E" stroke="#11C8D6" stroke-width="3"/><text y="5" fill="#FFFFFF" font-size="18" font-weight="700">Render</text><text y="90" fill="#8C91A0" font-size="15">Best engine</text></g>
+<g transform="translate(1130 236)"><circle r="54" fill="#101C19" stroke="#36EFC0" stroke-width="3"/><text y="5" fill="#FFFFFF" font-size="18" font-weight="700">QC</text><text y="90" fill="#8C91A0" font-size="15">ffprobe + frames</text></g>
+<g transform="translate(1330 236)"><circle r="54" fill="#13181A" stroke="#74F6D5" stroke-width="3"/><text y="5" fill="#FFFFFF" font-size="18" font-weight="700">MP4</text><text y="90" fill="#8C91A0" font-size="15">Verified output</text></g>
+</g>
+</svg>

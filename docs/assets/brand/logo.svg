@@ -1,0 +1,18 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+<defs>
+  <linearGradient id="g" x1="62" y1="42" x2="455" y2="462" gradientUnits="userSpaceOnUse">
+    <stop stop-color="#7C5CFF"/><stop offset=".38" stop-color="#B64CFF"/><stop offset=".72" stop-color="#00C8FF"/><stop offset="1" stop-color="#39F2C2"/>
+  </linearGradient>
+  <linearGradient id="inner" x1="152" y1="128" x2="358" y2="386" gradientUnits="userSpaceOnUse">
+    <stop stop-color="#171526"/><stop offset="1" stop-color="#090A10"/>
+  </linearGradient>
+  <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="18"/></filter>
+</defs>
+<rect width="512" height="512" rx="118" fill="#07080D"/>
+<circle cx="256" cy="256" r="174" fill="url(#g)" opacity=".2" filter="url(#shadow)"/>
+<rect x="78" y="78" width="356" height="356" rx="98" fill="url(#inner)" stroke="url(#g)" stroke-width="8"/>
+<path d="M146 170H366V342H146V170Z" stroke="url(#g)" stroke-width="18" stroke-linejoin="round"/>
+<path d="M146 224H206M306 224H366M146 288H206M306 288H366M206 170V342M306 170V342" stroke="url(#g)" stroke-width="14" stroke-linecap="round" opacity=".95"/>
+<path d="M236 215L316 256L236 297V215Z" fill="url(#g)"/>
+<circle cx="395" cy="121" r="16" fill="#3CF0C8"/><circle cx="111" cy="391" r="12" fill="#8D6CFF"/>
+</svg>
