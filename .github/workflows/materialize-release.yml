@@ -1,0 +1,58 @@
+name: Materialize release assets
+
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - 'dist/**'
+      - 'docs/assets/**/*.png'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  materialize:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Prepare image renderer
+        run: python -m pip install --disable-pip-version-check cairosvg
+
+      - name: Materialize PNG previews
+        run: |
+          python - <<'PY'
+          import cairosvg
+          from pathlib import Path
+          pairs = [
+            ('docs/assets/brand/logo.svg', 'docs/assets/brand/logo.png', 512, 512),
+            ('docs/assets/screenshots/dashboard.svg', 'docs/assets/screenshots/dashboard.png', 1600, 960),
+            ('docs/assets/screenshots/initialize.svg', 'docs/assets/screenshots/initialize.png', 1600, 960),
+            ('docs/assets/screenshots/skills-engines.svg', 'docs/assets/screenshots/skills-engines.png', 1600, 960),
+          ]
+          for src, dst, w, h in pairs:
+              Path(dst).parent.mkdir(parents=True, exist_ok=True)
+              cairosvg.svg2png(url=src, write_to=dst, output_width=w, output_height=h)
+          PY
+
+      - name: Build ready-to-run packages
+        run: |
+          rm -rf dist .release-stage
+          mkdir -p dist .release-stage/GraviStudio-v0.1.0
+          rsync -a ./ .release-stage/GraviStudio-v0.1.0/ \
+            --exclude '.git' --exclude 'dist' --exclude 'node_modules' --exclude '.gravistudio' --exclude '.release-stage'
+          (cd .release-stage && zip -qr ../dist/GraviStudio-v0.1.0-prebuilt.zip GraviStudio-v0.1.0)
+          zip -qr dist/gravistudio-antigravity-plugin-v0.1.0.zip plugin
+          (cd dist && sha256sum GraviStudio-v0.1.0-prebuilt.zip gravistudio-antigravity-plugin-v0.1.0.zip > SHA256SUMS.txt)
+          rm -rf .release-stage
+
+      - name: Commit generated binaries
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add dist docs/assets/brand/logo.png docs/assets/screenshots/*.png
+          git diff --cached --quiet && exit 0
+          git commit -m 'build: materialize prebuilt packages and PNG previews'
+          git push
