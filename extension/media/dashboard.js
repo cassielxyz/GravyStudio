@@ -2,6 +2,7 @@
   const vscode = acquireVsCodeApi();
   const $ = (id) => document.getElementById(id);
   let state;
+  let activeCard;
   const moduleMeta = {
     brag: ['Brag', 'Product launch skill'], hyperframes: ['HyperFrames', 'Motion / composition engine'], autoclip: ['AutoClip', 'Long video → shorts'],
     supoclip: ['SupoClip', 'Self-hosted clipper'], openmontage: ['OpenMontage', 'Long-form production'], personalive: ['PersonaLive', 'Experimental avatar engine']
@@ -15,7 +16,8 @@
     user:'<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.2" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M5.5 20c.4-4.2 2.5-6.3 6.5-6.3s6.1 2.1 6.5 6.3h-13Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>',
     scissors:'<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="6" cy="7" r="2.3" fill="none" stroke="currentColor" stroke-width="1.7"/><circle cx="6" cy="17" r="2.3" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="m8 8.3 11 8.2M8 15.7l4-3m2-1.5 5-3.7" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>',
     bars:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19V12h3v7H5Zm5.5 0V8h3v11h-3ZM16 19V4h3v15h-3Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>',
-    chevron:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+    chevron:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+    close:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>'
   };
 
   $('initialize').onclick = () => $('modal').classList.remove('hidden');
@@ -24,27 +26,89 @@
   $('runInitialize').onclick = () => {
     const modules = [...document.querySelectorAll('.module-select input:checked')].map(x => x.value);
     $('modal').classList.add('hidden');
+    showNotice({ok:true,code:'working',message:'Initializing GraviStudio',detail:'Installing and verifying the selected skills and engines…'});
     vscode.postMessage({ type: 'initialize', modules });
   };
-  $('doctor').onclick = () => vscode.postMessage({ type: 'doctor' });
+  $('doctor').onclick = () => {
+    setBusy($('doctor'), true, 'Checking…');
+    vscode.postMessage({ type: 'doctor' });
+  };
   $('settings').onclick = () => vscode.postMessage({ type: 'settings' });
   $('logs').onclick = () => vscode.postMessage({ type: 'logs' });
-  $('statusStrip').onclick = () => vscode.postMessage({ type: 'doctor' });
+  $('statusStrip').onclick = () => {
+    setBusy($('doctor'), true, 'Checking…');
+    vscode.postMessage({ type: 'doctor' });
+  };
   if ($('openStudio')) $('openStudio').onclick = () => vscode.postMessage({ type: 'openStudio' });
 
   window.addEventListener('keydown', e => { if (e.key === 'Escape') $('modal').classList.add('hidden'); });
   window.addEventListener('message', (event) => {
-    if (event.data.type !== 'state') return;
-    state = event.data.state;
-    render();
+    if (event.data.type === 'state') {
+      state = event.data.state;
+      render();
+      setBusy($('doctor'), false);
+      return;
+    }
+    if (event.data.type === 'actionResult') {
+      clearActiveCard();
+      showNotice(event.data.result || {});
+    }
   });
 
   function pill(ok, yes = 'Ready', no = 'Missing') {
     return `<span class="pill ${ok ? 'ok' : 'bad'}"><span></span>${ok ? yes : no}</span>`;
   }
+
   function tags(route) {
     const values = Array.isArray(route) ? route : String(route || '').split('+').map(x => x.trim()).filter(Boolean);
     return `<div class="route">${values.map(x => `<span>${x}</span>`).join('')}</div>`;
+  }
+
+  function setBusy(el, busy, label) {
+    if (!el) return;
+    if (busy) {
+      if (!el.dataset.label) el.dataset.label = el.textContent.trim();
+      el.classList.add('is-busy');
+      el.disabled = true;
+      const text = el.querySelector('span:last-child');
+      if (text && label) text.textContent = label;
+    } else {
+      el.classList.remove('is-busy');
+      el.disabled = false;
+      if (el.dataset.label) {
+        const text = el.querySelector('span:last-child');
+        if (text) text.textContent = el.dataset.label;
+        delete el.dataset.label;
+      }
+    }
+  }
+
+  function showNotice(result) {
+    if (!result || result.code === 'cancelled') return;
+    const notice = $('actionNotice');
+    const tone = result.ok ? 'success' : (result.code === 'agy-missing' ? 'warning' : 'error');
+    const action = result.action === 'doctor'
+      ? '<button type="button" data-notice-action="doctor">Verify setup</button>'
+      : '';
+    notice.className = `action-notice ${tone}`;
+    notice.innerHTML = `
+      <span class="notice-indicator"></span>
+      <span class="notice-copy"><b>${escapeHtml(result.message || 'GraviStudio')}</b><small>${escapeHtml(result.detail || '')}</small></span>
+      <span class="notice-actions">${action}<button type="button" class="notice-close" aria-label="Dismiss">${icons.close}</button></span>`;
+    notice.querySelector('.notice-close').onclick = () => notice.classList.add('hidden');
+    const doctorAction = notice.querySelector('[data-notice-action="doctor"]');
+    if (doctorAction) doctorAction.onclick = () => vscode.postMessage({ type: 'doctor' });
+  }
+
+  function escapeHtml(value) {
+    return String(value).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+  }
+
+  function clearActiveCard() {
+    if (!activeCard) return;
+    activeCard.classList.remove('is-busy');
+    activeCard.disabled = false;
+    activeCard = null;
   }
 
   function render() {
@@ -52,7 +116,7 @@
     const installedSkills = skillValues.filter(Boolean).length;
     const totalSkills = skillValues.length;
     const coreReady = !!state.runtime.agy && installedSkills === totalSkills;
-    $('statusStrip').innerHTML = `<span class="dot ${coreReady ? 'ok' : 'warn'}"></span><span class="status-copy"><b>${coreReady ? 'Studio ready' : 'Setup incomplete'}</b><small>${installedSkills}/${totalSkills} bundled skills · Free Mode ${state.freeMode ? 'ON' : 'OFF'}</small></span><span class="status-chevron">${icons.chevron}</span>`;
+    $('statusStrip').innerHTML = `<span class="dot ${coreReady ? 'ok' : 'warn'}"></span><span class="status-copy"><b>${coreReady ? 'Studio ready' : 'Setup incomplete'}</b><small>${installedSkills}/${totalSkills} bundled skills · Free Mode ${state.freeMode ? 'ON' : 'OFF'}${state.runtime.agy ? '' : ' · CLI not detected'}</small></span><span class="status-chevron">${icons.chevron}</span>`;
 
     $('categories').innerHTML = (state.categories || []).map(c => `
       <button class="card" data-category="${c.id}" data-accent="${c.accent || 'violet'}">
@@ -62,11 +126,19 @@
         ${tags(c.route)}
         <span class="arrow">${icons.chevron}</span>
       </button>`).join('');
-    document.querySelectorAll('[data-category]').forEach(el => el.onclick = () => vscode.postMessage({ type: 'createJob', category: el.dataset.category }));
+
+    document.querySelectorAll('[data-category]').forEach(el => el.onclick = () => {
+      clearActiveCard();
+      activeCard = el;
+      el.classList.add('is-busy');
+      el.disabled = true;
+      showNotice({ok:true,code:'working',message:`Opening ${el.querySelector('h3').textContent}`,detail:'Add your brief in the Antigravity input box. GraviStudio will save a checkpoint before launch.'});
+      vscode.postMessage({ type: 'createJob', category: el.dataset.category });
+    });
 
     const rt = state.runtime;
     $('runtime').innerHTML = `
-      <div><b>Antigravity</b>${pill(rt.agy, 'Connected', 'Needs setup')}</div>
+      <div><b>Antigravity CLI</b>${pill(rt.agy, 'Connected', 'Not detected')}</div>
       <div><b>FFmpeg</b>${pill(rt.ffmpeg)}</div>
       <div><b>ffprobe</b>${pill(rt.ffprobe)}</div>
       <div><b>Git</b>${pill(rt.git)}</div>
@@ -76,7 +148,12 @@
       const ready = state.modules && state.modules[id];
       return `<div class="module"><div><b>${meta[0]}</b><small>${meta[1]}</small></div>${ready ? pill(true, 'Installed') : `<button data-install="${id}" class="tiny">Install</button>`}</div>`;
     }).join('');
-    document.querySelectorAll('[data-install]').forEach(el => el.onclick = () => vscode.postMessage({ type: 'installModule', module: el.dataset.install }));
+
+    document.querySelectorAll('[data-install]').forEach(el => el.onclick = () => {
+      el.disabled = true;
+      el.textContent = 'Installing…';
+      vscode.postMessage({ type: 'installModule', module: el.dataset.install });
+    });
   }
 
   vscode.postMessage({ type: 'doctor' });
