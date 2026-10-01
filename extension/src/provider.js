@@ -18,7 +18,30 @@ class StudioProvider{
  constructor(extensionUri,context,actions){this.extensionUri=extensionUri;this.context=context;this.actions=actions;this.views=new Set()}
  resolveWebviewView(view){this.configure(view.webview);view.webview.html=this.html(view.webview,false);this.views.add(view.webview);view.onDidDispose(()=>this.views.delete(view.webview));this.bind(view.webview);doctor(this.context).then(s=>this.publish(s))}
  configure(w){w.options={enableScripts:true,localResourceRoots:[vscode.Uri.joinPath(this.extensionUri,'media')]}}
- bind(w){w.onDidReceiveMessage(async m=>{try{if(m.type==='doctor')this.publish(await doctor(this.context));else if(m.type==='initialize')await this.actions.initialize(Array.isArray(m.modules)?m.modules:[]);else if(m.type==='installModule'){await installModule(this.context,m.module);this.publish(await doctor(this.context))}else if(m.type==='createJob')await startJob(m.category);else if(m.type==='openStudio')this.open();else if(m.type==='settings')vscode.commands.executeCommand('workbench.action.openSettings','@ext:cassielxyz.gravistudio');else if(m.type==='logs')this.actions.logs()}catch(e){this.actions.error(e)}})}
+ bind(w){w.onDidReceiveMessage(async m=>{try{
+   if(m.type==='doctor'){
+     const s=await doctor(this.context);
+     this.publish(s);
+     w.postMessage({type:'actionResult',result:{ok:true,code:'verified',message:'Verification complete',detail:s.runtime.agy?'Antigravity CLI is connected.':'Bundled skills are loaded, but Antigravity CLI is not detected yet.'}});
+   }else if(m.type==='initialize'){
+     await this.actions.initialize(Array.isArray(m.modules)?m.modules:[]);
+     w.postMessage({type:'actionResult',result:{ok:true,code:'initialized',message:'Initialization finished',detail:'GraviStudio re-ran skill and engine verification.'}});
+   }else if(m.type==='installModule'){
+     await installModule(this.context,m.module);
+     this.publish(await doctor(this.context));
+     w.postMessage({type:'actionResult',result:{ok:true,code:'module-installed',message:'Engine installed',detail:'The module is ready for GraviStudio routing.'}});
+   }else if(m.type==='createJob'){
+     const result=await startJob(m.category);
+     if(result&&result.code!=='cancelled')w.postMessage({type:'actionResult',result});
+   }else if(m.type==='openStudio'){
+     this.open();
+   }else if(m.type==='settings'){
+     await vscode.commands.executeCommand('workbench.action.openSettings','@ext:cassielxyz.gravistudio');
+     w.postMessage({type:'actionResult',result:{ok:true,code:'settings-opened',message:'GraviStudio settings opened',detail:'Configure Free Mode and local paths from Settings.'}});
+   }else if(m.type==='logs'){
+     this.actions.logs();
+   }
+ }catch(e){this.actions.error(e);w.postMessage({type:'actionResult',result:{ok:false,code:'error',message:'Action failed',detail:e&&e.message?e.message:String(e)}})}})}
  publish(s){lastState=s;for(const w of this.views)w.postMessage({type:'state',state:s});if(activePanel)activePanel.webview.postMessage({type:'state',state:s})}
  open(){if(activePanel){activePanel.reveal(vscode.ViewColumn.One);if(lastState)activePanel.webview.postMessage({type:'state',state:lastState});return}activePanel=vscode.window.createWebviewPanel('gravistudio.studio','GraviStudio — AI Video Studio',vscode.ViewColumn.One,{enableScripts:true,retainContextWhenHidden:true,localResourceRoots:[vscode.Uri.joinPath(this.extensionUri,'media')]});activePanel.iconPath=vscode.Uri.joinPath(this.extensionUri,'media','icon.png');activePanel.webview.html=this.html(activePanel.webview,true);this.bind(activePanel.webview);activePanel.onDidDispose(()=>activePanel=undefined);if(lastState)activePanel.webview.postMessage({type:'state',state:lastState});else doctor(this.context).then(s=>this.publish(s))}
  html(w,full){
@@ -39,6 +62,7 @@ class StudioProvider{
   </section>
 
   <button class="status-strip" id="statusStrip" type="button" aria-live="polite"><span class="dot wait"></span><span class="status-copy"><b>Checking setup</b><small>Inspecting skills and local runtimes…</small></span><span class="status-chevron">${ICONS.chevron}</span></button>
+  <section id="actionNotice" class="action-notice hidden" aria-live="polite"></section>
 
   <section class="workspace-section">
     <div class="section-head workspace-head"><div><span class="kicker">CREATE</span><h2>Video workspaces</h2><p>Purpose-built routes for each kind of video.</p></div><button id="openStudio" class="small ${full?'hidden':''}"><span>${ICONS.external}</span>Open full studio</button></div>
