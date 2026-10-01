@@ -1,0 +1,99 @@
+{
+  "name": "gravistudio",
+  "displayName": "GraviStudio",
+  "description": "Antigravity-powered AI Video Studio with skill initialization, routing, assets, checkpoints and video QC.",
+  "version": "0.2.0",
+  "publisher": "cassielxyz",
+  "license": "MIT",
+  "homepage": "https://github.com/cassielxyz/GravyStudio",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cassielxyz/GravyStudio.git"
+  },
+  "bugs": {
+    "url": "https://github.com/cassielxyz/GravyStudio/issues"
+  },
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Other",
+    "Machine Learning"
+  ],
+  "keywords": [
+    "antigravity",
+    "gemini",
+    "video",
+    "ai video",
+    "ffmpeg",
+    "hyperframes",
+    "brag",
+    "autoclip"
+  ],
+  "activationEvents": [
+    "onView:gravistudio.dashboard",
+    "onCommand:gravistudio.openStudio",
+    "onCommand:gravistudio.initialize",
+    "onCommand:gravistudio.doctor"
+  ],
+  "main": "./extension.js",
+  "icon": "media/icon.png",
+  "contributes": {
+    "commands": [
+      {
+        "command": "gravistudio.openStudio",
+        "title": "GraviStudio: Open AI Video Studio",
+        "category": "GraviStudio"
+      },
+      {
+        "command": "gravistudio.initialize",
+        "title": "GraviStudio: Initialize Studio",
+        "category": "GraviStudio"
+      },
+      {
+        "command": "gravistudio.doctor",
+        "title": "GraviStudio: Verify Skills & Engines",
+        "category": "GraviStudio"
+      }
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "gravistudio",
+          "title": "GraviStudio",
+          "icon": "media/sidebar.svg"
+        }
+      ]
+    },
+    "views": {
+      "gravistudio": [
+        {
+          "type": "webview",
+          "id": "gravistudio.dashboard",
+          "name": "AI Video Studio",
+          "icon": "media/sidebar.svg"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "GraviStudio",
+      "properties": {
+        "gravistudio.freeMode": {
+          "type": "boolean",
+          "default": true,
+          "description": "Prefer free/local/open-source video routes and never auto-enable paid providers."
+        },
+        "gravistudio.antigravitySkillsPath": {
+          "type": "string",
+          "default": "~/.gemini/antigravity/skills",
+          "description": "Global Antigravity skills directory used by Initialize Studio."
+        },
+        "gravistudio.moduleDirectory": {
+          "type": "string",
+          "default": "~/.gravistudio/modules",
+          "description": "Directory where optional open-source video engines are cloned."
+        }
+      }
+    }
+  }
+}
