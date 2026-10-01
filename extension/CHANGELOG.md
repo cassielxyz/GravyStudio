@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.2.2
+
+- Fixed workspace cards appearing dead when Antigravity CLI is unavailable.
+- Workspace clicks now open the brief flow first and save a checkpoint before reporting a launch blocker.
+- Added in-dashboard action feedback for Verify, Settings, initialization, engine installs and workspace launches.
+- Added clear busy states and a CLI-not-detected readiness message instead of immediately throwing an error toast.
+- Preserved the user's video brief when launch is blocked so work can resume after CLI setup.
+
 ## 0.2.1
 
 - Reworked the extension dashboard with a cleaner shadcn-inspired design system.
