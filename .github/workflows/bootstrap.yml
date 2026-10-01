@@ -16,9 +16,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Expand production source
+      - name: Reconstruct production source
+        shell: bash
         run: |
-          unzip -o .bootstrap/gravistudio-source.zip -d .
+          cat .bootstrap/chunks/*.b64 | tr -d '\n\r' | base64 -d > /tmp/gravistudio-source.zip
+          unzip -t /tmp/gravistudio-source.zip
+          unzip -o /tmp/gravistudio-source.zip -d .
           rm -rf .bootstrap
           rm -f .github/workflows/bootstrap.yml
 
