@@ -3,6 +3,10 @@
 </p>
 
 <p align="center">
+  <img src="docs/assets/brand/logo.png" alt="GraviStudio logo" width="132" />
+</p>
+
+<p align="center">
   <img src="docs/assets/brand/badge-antigravity.svg" alt="Antigravity agent runtime" />
   <img src="docs/assets/brand/badge-free-first.svg" alt="Free-first default" />
   <img src="docs/assets/brand/badge-zero-runtime-deps.svg" alt="Node 22 and zero npm runtime dependencies" />
@@ -30,7 +34,7 @@
 GraviStudio turns **Google Antigravity into the decision-making layer** and keeps specialist video engines underneath a single interface. You describe the result you want; the studio chooses the smallest capable route, fills missing assets, maintains checkpoints, renders locally where possible, and verifies the final media before calling the job complete.
 
 <p align="center">
-  <img src="docs/assets/screenshots/dashboard.svg" alt="GraviStudio dashboard" width="96%" />
+  <img src="docs/assets/screenshots/dashboard.png" alt="GraviStudio dashboard" width="96%" />
   <br/><sub>Current dashboard UI preview generated from the repository source.</sub>
 </p>
 
@@ -67,7 +71,7 @@ GraviStudio turns **Google Antigravity into the decision-making layer** and keep
 The first-launch **Initialize Studio** action is intentionally idempotent. It checks what is already present, installs only missing pieces, then runs a doctor pass and reports each module as **Ready**, **Needs setup**, **Missing**, or **Experimental**.
 
 <p align="center">
-  <img src="docs/assets/screenshots/initialize.svg" alt="GraviStudio Initialize Studio dialog" width="90%" />
+  <img src="docs/assets/screenshots/initialize.png" alt="GraviStudio Initialize Studio dialog" width="90%" />
 </p>
 
 Core initialization covers:
@@ -83,7 +87,7 @@ Core initialization covers:
 Heavy modules stay opt-in. AutoClip, SupoClip, OpenMontage and PersonaLive are downloaded only when selected; GraviStudio does **not** silently modify CUDA, Conda or system Python environments.
 
 <p align="center">
-  <img src="docs/assets/screenshots/skills-engines.svg" alt="GraviStudio skills and engines health screen" width="96%" />
+  <img src="docs/assets/screenshots/skills-engines.png" alt="GraviStudio skills and engines health screen" width="96%" />
 </p>
 
 ## Production flow
