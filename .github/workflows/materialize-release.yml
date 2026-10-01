@@ -1,3 +1,4 @@
+# GraviStudio release asset materializer
 name: Materialize release assets
 
 on:
