@@ -24,6 +24,7 @@
   <a href="#studio-workspaces"><strong>Workspaces</strong></a> ·
   <a href="#initialize-once-verify-any-time"><strong>Initialization</strong></a> ·
   <a href="#asset-agent"><strong>Asset Agent</strong></a> ·
+  <a href="#troubleshooting-antigravity-cli-on-windows"><strong>Troubleshooting</strong></a> ·
   <a href="#downloads"><strong>Prebuilt downloads</strong></a>
 </p>
 
@@ -196,6 +197,106 @@ http://127.0.0.1:47831
 Click **Initialize Studio** on first launch.
 
 GraviStudio itself has **zero npm runtime dependencies** — the dashboard/API is served directly by Node 22. Video skills and optional engines are installed only when you initialize them.
+
+## Troubleshooting Antigravity CLI on Windows
+
+GraviStudio can install and verify its bundled skills without the Antigravity CLI, so you may see **8/8 bundled skills** while the dashboard still reports:
+
+```text
+Antigravity CLI
+Not detected
+```
+
+The CLI is a separate prerequisite used to actually launch Gemini/Antigravity video-production jobs.
+
+### Installer fails with a DNS / Cloud Run error
+
+If this command:
+
+```powershell
+irm https://antigravity.google/cli/install.ps1 | iex
+```
+
+fails with an error similar to:
+
+```text
+Fatal: Failed to download release manifest
+The remote name could not be resolved:
+antigravity-cli-auto-updater-974169037036.us-central1.run.app
+```
+
+the PowerShell script itself downloaded correctly, but Windows could not resolve the Cloud Run hostname used by the Antigravity CLI updater.
+
+### Recommended Windows workaround: WinGet
+
+Try installing the CLI directly with WinGet:
+
+```powershell
+winget install --id Google.AntigravityCLI --exact --accept-source-agreements --accept-package-agreements
+```
+
+When installation finishes, **close the current PowerShell window and open a new one**, then verify:
+
+```powershell
+agy --version
+where.exe agy
+```
+
+Run the CLI once to complete sign-in if required:
+
+```powershell
+agy
+```
+
+Then return to GraviStudio and click **Verify**. The dashboard should change from **Not detected** to **Connected**.
+
+### If WinGet or the installer still cannot connect
+
+First check whether Windows can resolve the updater host:
+
+```powershell
+Resolve-DnsName antigravity-cli-auto-updater-974169037036.us-central1.run.app
+```
+
+Then test HTTPS connectivity:
+
+```powershell
+Test-NetConnection antigravity-cli-auto-updater-974169037036.us-central1.run.app -Port 443
+```
+
+If DNS resolution fails, flush the Windows DNS cache:
+
+```powershell
+ipconfig /flushdns
+```
+
+You can also test public DNS resolvers directly:
+
+```powershell
+Resolve-DnsName antigravity-cli-auto-updater-974169037036.us-central1.run.app -Server 1.1.1.1
+Resolve-DnsName antigravity-cli-auto-updater-974169037036.us-central1.run.app -Server 8.8.8.8
+```
+
+If those commands work while the normal lookup fails, your current router/ISP DNS is likely the problem. Temporarily switching Windows DNS to Cloudflare or Google can help:
+
+```text
+Preferred DNS:  1.1.1.1
+Alternate DNS:  8.8.8.8
+```
+
+A phone hotspot is also a useful quick test to determine whether the issue is specific to the current network.
+
+### GraviStudio behavior when the CLI is missing
+
+Current GraviStudio builds no longer make workspace cards appear broken when `agy` is unavailable. You can still open a workspace, enter the video brief, and GraviStudio saves the draft checkpoint before reporting the CLI blocker.
+
+After the CLI is available:
+
+```text
+GraviStudio → Verify → Antigravity CLI: Connected
+```
+
+Then Product Video, Motion Graphics, Website → Video, Auto Shorts, AI Director and the other workspaces can launch the Antigravity agent normally.
 
 ## Downloads
 
