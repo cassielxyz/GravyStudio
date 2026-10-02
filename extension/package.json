@@ -2,7 +2,7 @@
   "name": "gravistudio",
   "displayName": "GraviStudio",
   "description": "Antigravity-powered AI Video Studio with skill initialization, routing, assets, checkpoints and video QC.",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "publisher": "cassielxyz",
   "license": "MIT",
   "homepage": "https://github.com/cassielxyz/GravyStudio",
