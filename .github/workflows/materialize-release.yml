@@ -43,6 +43,7 @@ jobs:
           node --check extension/extension.js
           node --check extension/src/data.js
           node --check extension/src/jobs.js
+          node --check extension/src/launch-command.js
           node --check extension/src/provider.js
           node --check extension/src/system.js
           node --check extension/media/dashboard.js
