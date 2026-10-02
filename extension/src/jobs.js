@@ -93,7 +93,7 @@ async function startJob(categoryId){
 
   const t=vscode.window.createTerminal({name:`GraviStudio · ${c.title}`,cwd:root});
   t.show(true);
-  t.sendText(`${quote(agy)} -p ${quote(prompt)} --output-format stream-json`,true);
+  t.sendText(buildLaunchCommand(agy,prompt),true);
 
   job.status='running';
   job.updatedAt=new Date().toISOString();
@@ -110,11 +110,21 @@ async function startJob(categoryId){
   };
 }
 
-function quote(v){
-  const s=String(v);
-  return process.platform==='win32'
-    ?`"${s.replace(/`/g,'``').replace(/"/g,'`"')}"`
-    :`'${s.replace(/'/g,`'\\''`)}'`;
+function psQuote(v){
+  return `'${String(v).replace(/'/g,"''")}'`;
 }
 
-module.exports={startJob};
+function posixQuote(v){
+  return `'${String(v).replace(/'/g,`'\\''`)}'`;
+}
+
+function buildLaunchCommand(agy,prompt,platform=process.platform){
+  if(platform==='win32'){
+    const script=`& ${psQuote(agy)} -p ${psQuote(prompt)} --output-format stream-json`;
+    const encoded=Buffer.from(script,'utf16le').toString('base64');
+    return `powershell.exe -NoLogo -NoProfile -NonInteractive -EncodedCommand ${encoded}`;
+  }
+  return `${posixQuote(agy)} -p ${posixQuote(prompt)} --output-format stream-json`;
+}
+
+module.exports={startJob,buildLaunchCommand};
