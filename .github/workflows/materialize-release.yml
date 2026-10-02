@@ -75,7 +75,7 @@ jobs:
           <?xml version="1.0" encoding="utf-8"?>
           <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011">
             <Metadata>
-              <Identity Language="en-US" Id="gravistudio" Version="0.2.2" Publisher="cassielxyz" />
+              <Identity Language="en-US" Id="gravistudio" Version="0.2.3" Publisher="cassielxyz" />
               <DisplayName>GraviStudio</DisplayName>
               <Description xml:space="preserve">Antigravity-powered AI Video Studio with skill initialization, routing, assets, checkpoints and video QC.</Description>
               <Tags>antigravity,gemini,video,ai-video,ffmpeg,hyperframes,brag,autoclip</Tags>
@@ -116,15 +116,15 @@ jobs:
           </Types>
           XML
 
-          (cd .release-stage/vsix && zip -qr ../../dist/GraviStudio-0.2.2.vsix '[Content_Types].xml' extension.vsixmanifest extension)
-          unzip -t dist/GraviStudio-0.2.2.vsix
-          test "$(unzip -p dist/GraviStudio-0.2.2.vsix extension/package.json | python -c 'import json,sys; print(json.load(sys.stdin)["name"])')" = gravistudio
-          test "$(unzip -p dist/GraviStudio-0.2.2.vsix extension/package.json | python -c 'import json,sys; print(json.load(sys.stdin)["version"])')" = 0.2.2
-          unzip -l dist/GraviStudio-0.2.2.vsix | grep -q 'extension/resources/plugin/skills/video-studio/SKILL.md'
-          unzip -l dist/GraviStudio-0.2.2.vsix | grep -q 'extension/media/dashboard.css'
-          unzip -l dist/GraviStudio-0.2.2.vsix | grep -q 'extension/media/wordmark.png'
-          unzip -l dist/GraviStudio-0.2.2.vsix | grep -q 'extension/src/system.js'
-          (cd dist && sha256sum GraviStudio-v0.1.0-prebuilt.zip gravistudio-antigravity-plugin-v0.1.0.zip GraviStudio-0.2.2.vsix > SHA256SUMS.txt)
+          (cd .release-stage/vsix && zip -qr ../../dist/GraviStudio-0.2.3.vsix '[Content_Types].xml' extension.vsixmanifest extension)
+          unzip -t dist/GraviStudio-0.2.3.vsix
+          test "$(unzip -p dist/GraviStudio-0.2.3.vsix extension/package.json | python -c 'import json,sys; print(json.load(sys.stdin)["name"])')" = gravistudio
+          test "$(unzip -p dist/GraviStudio-0.2.3.vsix extension/package.json | python -c 'import json,sys; print(json.load(sys.stdin)["version"])')" = 0.2.3
+          unzip -l dist/GraviStudio-0.2.3.vsix | grep -q 'extension/resources/plugin/skills/video-studio/SKILL.md'
+          unzip -l dist/GraviStudio-0.2.3.vsix | grep -q 'extension/media/dashboard.css'
+          unzip -l dist/GraviStudio-0.2.3.vsix | grep -q 'extension/media/wordmark.png'
+          unzip -l dist/GraviStudio-0.2.3.vsix | grep -q 'extension/src/system.js'
+          (cd dist && sha256sum GraviStudio-v0.1.0-prebuilt.zip gravistudio-antigravity-plugin-v0.1.0.zip GraviStudio-0.2.3.vsix > SHA256SUMS.txt)
           rm -rf .release-stage
 
       - name: Commit generated binaries
