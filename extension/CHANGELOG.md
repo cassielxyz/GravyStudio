@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.2.3
+
+- Fixed Windows PowerShell job launches where a quoted `"agy"` executable was parsed as a string instead of a command.
+- Windows launches now use a UTF-16LE PowerShell `-EncodedCommand` wrapper, preserving multiline prompts, Unicode, apostrophes and paths with spaces.
+- Added regression tests for Windows PowerShell and POSIX command construction.
+
 ## 0.2.2
 
 - Fixed workspace cards appearing dead when Antigravity CLI is unavailable.
